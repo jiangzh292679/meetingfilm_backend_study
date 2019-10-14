@@ -1,2 +1,14 @@
+server:
+  port: 7201
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8762/eureka/
+
+spring:
+  application:
+    name: hello-service-consumer
+
 logging:
   config: classpath:logback.xml
