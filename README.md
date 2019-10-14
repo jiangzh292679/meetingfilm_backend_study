@@ -13,3 +13,4 @@
 | v4.5  | Eureka Server构建 |  |
 | v4.6  | 演示环境构建 |  |
 | v4.7  | Eureka Client构建演示 |  |
+| v4.11  | Eureka Client服务调用演示 |  |
