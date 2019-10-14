@@ -1,4 +1,4 @@
-﻿package com.mooc.meetingfilm.utils.util;
+package com.mooc.meetingfilm.utils.util;
 
 import com.mooc.meetingfilm.utils.properties.JwtProperties;
 import io.jsonwebtoken.Claims;
