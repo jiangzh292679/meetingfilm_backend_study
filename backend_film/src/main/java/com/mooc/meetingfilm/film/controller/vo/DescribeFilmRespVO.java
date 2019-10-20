@@ -5,7 +5,7 @@ import lombok.Data;
 /**
  * @author : jiangzh
  * @program : com.mooc.meetingfilm.film.controller.vo
- * @description : 根据编号获取电影信息实体
+ * @description : 根据主键获取影片信息对象
  **/
 @Data
 public class DescribeFilmRespVO {
@@ -16,5 +16,7 @@ public class DescribeFilmRespVO {
     private String filmCats;
     private String actors;
     private String imgAddress;
+    private String subAddress;
+
 
 }

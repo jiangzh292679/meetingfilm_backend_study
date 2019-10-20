@@ -20,7 +20,7 @@ public interface FilmServiceAPI {
     // 获取电影列表
     IPage<DescribeFilmsRespVO> describeFilms(int nowPage, int pageSize) throws CommonServiceException;
 
-    // 根据编号获取电影信息
+    // 根据主键获取电影信息
     DescribeFilmRespVO describeFilmById(String filmId) throws CommonServiceException;
 
     // 保存电影信息

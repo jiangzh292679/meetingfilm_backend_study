@@ -55,15 +55,18 @@ public class FilmController {
         return BaseResponseVO.success(films);
     }
 
-    // 根据电影编号获取电影信息
+
+    // 根据电影主键获取电影信息
     @RequestMapping(value = "/{filmId}",method = RequestMethod.GET)
     public BaseResponseVO describeFilmById(@PathVariable("filmId")String filmId) throws CommonServiceException {
+
         DescribeFilmRespVO describeFilmRespVO = filmServiceAPI.describeFilmById(filmId);
         if(describeFilmRespVO == null){
             return BaseResponseVO.success();
         }else{
             return BaseResponseVO.success(describeFilmRespVO);
         }
+
     }
 
     // 根据电影编号获取电影信息
@@ -74,7 +77,6 @@ public class FilmController {
 
         return BaseResponseVO.success();
     }
-
 
     // 获取分页对象的公共接口
     private Map<String,Object> descrbePageResult(IPage page, String title){
