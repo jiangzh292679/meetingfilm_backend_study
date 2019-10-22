@@ -9,7 +9,6 @@ import java.io.Serializable;
  * </p>
  *
  * @author jiangzh
- * @since 2019-10-21
  */
 public class MoocHallFilmInfoT extends Model<MoocHallFilmInfoT> {
 

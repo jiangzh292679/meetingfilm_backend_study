@@ -1,11 +1,20 @@
 package com.mooc.meetingfilm.hall.service;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.mooc.meetingfilm.hall.controller.vo.HallSavedReqVO;
 import com.mooc.meetingfilm.hall.controller.vo.HallsReqVO;
 import com.mooc.meetingfilm.hall.controller.vo.HallsRespVO;
+import com.mooc.meetingfilm.hall.dao.entity.MoocFieldT;
+import com.mooc.meetingfilm.hall.dao.entity.MoocHallFilmInfoT;
+import com.mooc.meetingfilm.hall.dao.mapper.MoocFieldTMapper;
+import com.mooc.meetingfilm.hall.dao.mapper.MoocHallFilmInfoTMapper;
 import com.mooc.meetingfilm.utils.exception.CommonServiceException;
+import com.mooc.meetingfilm.utils.util.ToolUtils;
 import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
 
 /**
  * @author : jiangzh
@@ -14,13 +23,77 @@ import org.springframework.stereotype.Service;
  **/
 @Service
 public class HallServiceImpl implements HallServiceAPI{
+
+    @Resource
+    private MoocFieldTMapper fieldTMapper;
+
+    @Resource
+    private MoocHallFilmInfoTMapper hallFilmInfoTMapper;
+
+
+    /**
+    * @Description: 查询影厅列表
+    * @Param: [hallsReqVO]
+    * @return: com.baomidou.mybatisplus.core.metadata.IPage<com.mooc.meetingfilm.hall.controller.vo.HallsRespVO>
+    * @Author: jiangzh
+    */
     @Override
     public IPage<HallsRespVO> describeHalls(HallsReqVO hallsReqVO) throws CommonServiceException {
-        return null;
+
+        Page<HallsReqVO> page = new Page<>(hallsReqVO.getNowPage(),hallsReqVO.getPageSize());
+
+        QueryWrapper queryWrapper = new QueryWrapper();
+        if(ToolUtils.strIsNotNul(hallsReqVO.getCinemaId())){
+            queryWrapper.eq("cinema_id", hallsReqVO.getCinemaId());
+        }
+
+        IPage<HallsRespVO> result = fieldTMapper.describeHalls(page, queryWrapper);
+
+        return result;
     }
 
+    /**
+     * @Description: 保存影厅信息
+     * @Param: [hallSavedReqVO]
+     * @return: void
+     * @Author: jiangzh
+     */
     @Override
-    public void saveHall(HallSavedReqVO hallSavedReqVO) throws CommonServiceException {
+    public void saveHall(HallSavedReqVO reqVO) throws CommonServiceException {
+        // 播放厅的列表数据
+        MoocFieldT field = new MoocFieldT();
 
+        field.setCinemaId(ToolUtils.str2Int(reqVO.getCinemaId()));
+        field.setFilmId(ToolUtils.str2Int(reqVO.getFilmId()));
+        field.setBeginTime(reqVO.getBeginTime());
+        field.setEndTime(reqVO.getEndTime());
+        field.setHallId(ToolUtils.str2Int(reqVO.getHallTypeId()));
+        field.setHallName(reqVO.getHallName());
+        field.setPrice(ToolUtils.str2Int(reqVO.getFilmPrice()));
+
+        fieldTMapper.insert(field);
+        // 播放厅对应的影片数据， 影片冗余数据， 缓存里有一份
+        MoocHallFilmInfoT hallFilmInfo = describeFilmInfo(reqVO.getFilmId());
+
+        hallFilmInfoTMapper.insert(hallFilmInfo);
     }
+
+    // 播放厅对应的影片数据， 影片冗余数据， 缓存里有一份
+    private MoocHallFilmInfoT describeFilmInfo(String filmId) throws CommonServiceException{
+
+        // 组织参数
+        MoocHallFilmInfoT hallFilmInfo = new MoocHallFilmInfoT();
+
+        hallFilmInfo.setFilmId(0);
+        hallFilmInfo.setFilmName("");
+        hallFilmInfo.setFilmLength("");
+        hallFilmInfo.setFilmCats("");
+        hallFilmInfo.setFilmLanguage("");
+        hallFilmInfo.setActors("");
+        hallFilmInfo.setImgAddress("");
+
+        return hallFilmInfo;
+    }
+
+
 }

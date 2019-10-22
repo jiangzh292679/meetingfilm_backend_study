@@ -18,6 +18,7 @@ public class HallSavedReqVO extends BaserRequestVO {
     private String beginTime;
     private String endTime;
     private String filmPrice;
+    private String hallName;
 
     @Override
     public void checkParam() throws CommonServiceException {

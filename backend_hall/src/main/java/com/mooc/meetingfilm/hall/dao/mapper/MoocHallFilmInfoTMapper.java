@@ -9,7 +9,6 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * </p>
  *
  * @author jiangzh
- * @since 2019-10-21
  */
 public interface MoocHallFilmInfoTMapper extends BaseMapper<MoocHallFilmInfoT> {
 
