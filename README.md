@@ -28,3 +28,4 @@
 | ------ | ------ | ------ |
 | v7.3  | Ribbon之HelloWorld |  |
 | v7.4  | 构建多Provider演示环境 |  |
+| v7.6  | IRule配置演示 |  |
