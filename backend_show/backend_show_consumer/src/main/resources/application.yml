@@ -10,5 +10,12 @@ spring:
   application:
     name: hello-service-consumer
 
+ribbon:
+  MaxAutoRetries : 3
+
+hello-service-provider:
+  ribbon:
+    MaxAutoRetries : 3
+
 logging:
   config: classpath:logback.xml
