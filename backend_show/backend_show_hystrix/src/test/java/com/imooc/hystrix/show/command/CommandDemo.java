@@ -1,7 +1,6 @@
 package com.imooc.hystrix.show.command;
 
-import com.netflix.hystrix.HystrixCommand;
-import com.netflix.hystrix.HystrixCommandGroupKey;
+import com.netflix.hystrix.*;
 import lombok.Data;
 
 /**
@@ -16,7 +15,20 @@ public class CommandDemo extends HystrixCommand<String> {
 
     public CommandDemo(String name){
         super(Setter
-                .withGroupKey(HystrixCommandGroupKey.Factory.asKey("CommandHelloWorld")));
+                .withGroupKey(HystrixCommandGroupKey.Factory.asKey("CommandHelloWorld"))
+                .andCommandPropertiesDefaults(
+                        HystrixCommandProperties.defaultSetter()
+                            .withRequestCacheEnabled(false) // 请求缓存开关)
+                                // 切换线程池隔离还是信号量隔离
+//                        .withExecutionIsolationStrategy(HystrixCommandProperties.ExecutionIsolationStrategy.SEMAPHORE)
+                        .withExecutionIsolationStrategy(HystrixCommandProperties.ExecutionIsolationStrategy.THREAD)
+        ).andThreadPoolKey(HystrixThreadPoolKey.Factory.asKey("MyThreadPool"))
+         .andThreadPoolPropertiesDefaults(
+                 HystrixThreadPoolProperties.defaultSetter()
+                    .withCoreSize(2)
+                    .withMaximumSize(3).withAllowMaximumSizeToDivergeFromCoreSize(true)
+                    .withMaxQueueSize(2)
+         ));
 
         this.name = name;
     }
@@ -26,10 +38,16 @@ public class CommandDemo extends HystrixCommand<String> {
     protected String run() throws Exception {
         String result = "CommandHelloWorld name : "+ name;
 
-        Thread.sleep(800l);
+//        Thread.sleep(800l);
 
         System.err.println(result+" , currentThread-"+Thread.currentThread().getName());
 
         return result;
+    }
+
+
+    @Override
+    protected String getCacheKey() {
+        return String.valueOf(name);
     }
 }

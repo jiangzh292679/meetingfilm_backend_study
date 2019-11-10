@@ -1,6 +1,7 @@
 package com.imooc.hystrix.show.command;
 
 import com.netflix.hystrix.HystrixCommandGroupKey;
+import com.netflix.hystrix.HystrixCommandKey;
 import com.netflix.hystrix.HystrixObservableCommand;
 import lombok.Data;
 import rx.Observable;
@@ -19,7 +20,8 @@ public class ObserveCommandDemo extends HystrixObservableCommand<String> {
 
     public ObserveCommandDemo(String name){
         super(Setter
-                .withGroupKey(HystrixCommandGroupKey.Factory.asKey("ObserveCommandDemo")));
+                .withGroupKey(HystrixCommandGroupKey.Factory.asKey("ObserveCommandDemo"))
+                .andCommandKey(HystrixCommandKey.Factory.asKey("ObserveCommandKey")));
         this.name = name;
     }
 

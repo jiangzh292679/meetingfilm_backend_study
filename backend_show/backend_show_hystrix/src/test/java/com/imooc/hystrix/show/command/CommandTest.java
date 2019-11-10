@@ -1,5 +1,7 @@
 package com.imooc.hystrix.show.command;
 
+import com.netflix.hystrix.HystrixRequestCache;
+import com.netflix.hystrix.strategy.concurrency.HystrixRequestContext;
 import org.junit.Test;
 import rx.Observable;
 import rx.Subscriber;
@@ -27,6 +29,7 @@ public class CommandTest {
         long endTime = System.currentTimeMillis();
         System.out.println("result="+result+" , speeding="+(endTime-beginTime));
     }
+
 
     @Test
     public void queueTest() throws ExecutionException, InterruptedException {
@@ -120,5 +123,76 @@ public class CommandTest {
 
         Thread.sleep(2000l);
     }
+
+
+    /**
+     * @Description: 演示请求缓存
+     * @Param: []
+     * @return: void
+     * @Author: jiangzh
+     */
+    @Test
+    public void requestCache(){
+        // 开启请求上下文
+        HystrixRequestContext requestContext = HystrixRequestContext.initializeContext();
+        long beginTime = System.currentTimeMillis();
+
+        CommandDemo c1 = new CommandDemo("c1");
+        CommandDemo c2 = new CommandDemo("c2");
+        CommandDemo c3 = new CommandDemo("c1");
+
+        // 第一次请求
+        String r1 = c1.execute();
+
+        System.out.println("result="+r1+" , speeding="+(System.currentTimeMillis()-beginTime));
+
+        // 第二次请求
+        String r2 = c2.execute();
+
+        System.out.println("result="+r2+" , speeding="+(System.currentTimeMillis()-beginTime));
+
+        // 第三次请求
+        String r3 = c3.execute();
+        System.out.println("result="+r3+" , speeding="+(System.currentTimeMillis()-beginTime));
+
+        // 请求上下文关闭
+        requestContext.close();
+    }
+
+
+    /**
+    * @Description: 演示线程池内容
+    * @Param: []
+    * @return: void
+    * @Author: jiangzh
+    */
+    @Test
+    public void threadTest() throws ExecutionException, InterruptedException {
+        CommandDemo c1 = new CommandDemo("c1");
+        CommandDemo c2 = new CommandDemo("c2");
+        CommandDemo c3 = new CommandDemo("c3");
+        CommandDemo c4 = new CommandDemo("c4");
+        CommandDemo c5 = new CommandDemo("c5");
+
+        Future<String> q1 = c1.queue();
+        Future<String> q2 = c2.queue();
+        Future<String> q3 = c3.queue();
+        Future<String> q4 = c4.queue();
+        Future<String> q5 = c5.queue();
+
+        String r1 = q1.get();
+        String r2 = q2.get();
+        String r3 = q3.get();
+        String r4 = q4.get();
+        String r5 = q5.get();
+
+        System.out.println(r1+","+r2+","+r3+","+r4+","+r5);
+
+        // 1,2,3,4,5
+        // core 1,2  max 1
+        // queue 2
+
+    }
+
 
 }
