@@ -20,19 +20,43 @@ public class CommandDemo extends HystrixCommand<String> {
                         HystrixCommandProperties.defaultSetter()
                             .withRequestCacheEnabled(false) // 请求缓存开关)
                                 // 切换线程池隔离还是信号量隔离
-//                        .withExecutionIsolationStrategy(HystrixCommandProperties.ExecutionIsolationStrategy.SEMAPHORE)
-                        .withExecutionIsolationStrategy(HystrixCommandProperties.ExecutionIsolationStrategy.THREAD)
+                        .withExecutionIsolationStrategy(HystrixCommandProperties.ExecutionIsolationStrategy.SEMAPHORE)
+                        .withExecutionIsolationSemaphoreMaxConcurrentRequests(2)
+//                        .withExecutionIsolationStrategy(HystrixCommandProperties.ExecutionIsolationStrategy.THREAD)
         ).andThreadPoolKey(HystrixThreadPoolKey.Factory.asKey("MyThreadPool"))
-         .andThreadPoolPropertiesDefaults(
-                 HystrixThreadPoolProperties.defaultSetter()
-                    .withCoreSize(2)
-                    .withMaximumSize(3).withAllowMaximumSizeToDivergeFromCoreSize(true)
-                    .withMaxQueueSize(2)
-         ));
+//         .andThreadPoolPropertiesDefaults(
+//                 HystrixThreadPoolProperties.defaultSetter()
+//                    .withCoreSize(2)
+//                    .withMaximumSize(3).withAllowMaximumSizeToDivergeFromCoreSize(true)
+//                    .withMaxQueueSize(2)
+//         )
+        );
 
         this.name = name;
     }
 
+
+    /**
+    * @Description: 0个影片信息
+    * @Param: []
+    * @return: java.lang.String
+    * @Author: jiangzh
+    */
+    @Override
+    protected String getFallback() {
+        String result = "Fallback name : "+ name;
+
+        System.err.println(result+" , currentThread-"+Thread.currentThread().getName());
+
+        return result;
+    }
+
+    /**
+    * @Description:  影厅新增查询影片信息
+    * @Param:
+    * @return: java.lang.String
+    * @Author: jiangzh
+    */
     // 单次请求调用的业务方法
     @Override
     protected String run() throws Exception {
