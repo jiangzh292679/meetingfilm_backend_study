@@ -23,6 +23,9 @@ public class CommandDemo extends HystrixCommand<String> {
                         .withExecutionIsolationStrategy(HystrixCommandProperties.ExecutionIsolationStrategy.SEMAPHORE)
                         .withExecutionIsolationSemaphoreMaxConcurrentRequests(2)
 //                        .withExecutionIsolationStrategy(HystrixCommandProperties.ExecutionIsolationStrategy.THREAD)
+                        // .withCircuitBreakerForceOpen(true) // 强制开启熔断器
+                        .withCircuitBreakerRequestVolumeThreshold(2) // 单位时间内的请求阈值
+                        .withCircuitBreakerErrorThresholdPercentage(50) // 当满足请求阈值时，超过50%则开启熔断
         ).andThreadPoolKey(HystrixThreadPoolKey.Factory.asKey("MyThreadPool"))
 //         .andThreadPoolPropertiesDefaults(
 //                 HystrixThreadPoolProperties.defaultSetter()
@@ -63,6 +66,10 @@ public class CommandDemo extends HystrixCommand<String> {
         String result = "CommandHelloWorld name : "+ name;
 
 //        Thread.sleep(800l);
+
+        if(name.startsWith("jiangzh")){
+            int i = 6/0;
+        }
 
         System.err.println(result+" , currentThread-"+Thread.currentThread().getName());
 
